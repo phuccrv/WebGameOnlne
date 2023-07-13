@@ -25,11 +25,11 @@ const ProductUserComponent = ({ searchKeyword }) => {
   };
 
   const filterGames = () => {
-    if (!searchKeyword) {
+    if (searchKeyword.trim() === "") {
       setFilteredGames(games);
     } else {
       const filtered = games.filter((game) =>
-        game.title.toLowerCase().trim().includes(searchKeyword.toLowerCase())
+        game.title.toLowerCase().includes(searchKeyword.toLowerCase().trim())
       );
       setFilteredGames(filtered);
     }
@@ -45,7 +45,7 @@ const ProductUserComponent = ({ searchKeyword }) => {
       {/* box-item phần danh sách sản phẩm */}
       <div className="list-product">
         {filteredGames.map((game) => (
-          <div className="box-item">
+          <div className="box-item" key={game.id}>
             <img src={game.url} alt="" />
             <div className="box-dow">
               <div className="box-title">
