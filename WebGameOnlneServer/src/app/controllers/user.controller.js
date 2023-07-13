@@ -7,39 +7,39 @@ class UserController {
   handleRegister(req, res) {
     const { username, password } = req.body;
     console.log(111, username);
-  
+
     sql.query('SELECT * FROM user WHERE username = ?', [username], (err, results) => {
       if (err) {
         console.error('Error handling register:', err);
         return res.status(500).json({ message: 'Internal Server Error' });
       }
-  
+
       if (results.length > 0) {
         return res.status(400).json({ msg: 'Username already exists' });
       }
-  
+
       const saltRounds = 10;
       bcrypt.genSalt(saltRounds, (err, salt) => {
         if (err) {
           console.error('Error handling register:', err);
           return res.status(500).json({ message: 'Internal Server Error' });
         }
-  
+
         bcrypt.hash(password, salt, (err, hashedPassword) => {
           if (err) {
             console.error('Error handling register:', err);
             return res.status(500).json({ message: 'Internal Server Error' });
           }
-  
+
           sql.query(
-            "INSERT INTO user (username, password) VALUES (?, ?)",
+            'INSERT INTO user (username, password) VALUES (?, ?)',
             [username, hashedPassword], // Use hashedPassword instead of password
             (err, results) => {
               if (err) {
                 console.error('Error handling register:', err);
                 return res.status(500).json({ message: 'Internal Server Error 2' });
               }
-  
+
               return res.status(200).json({ msg: 'Register Successfully' });
             }
           );
@@ -47,7 +47,7 @@ class UserController {
       });
     });
   }
-
+// login user
   async handleLogin(req, res) {
     const { username, password } = req.body;
 

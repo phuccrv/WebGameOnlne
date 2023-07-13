@@ -1,8 +1,17 @@
 import React from "react";
 import "./HeaderUserComponent.css";
 import { BsBagHeartFill, BsFillPersonFill } from "react-icons/bs";
-import {Link} from "react-router-dom"
+import { Link } from "react-router-dom";
 const HeaderUserComponent = () => {
+  const userJson = localStorage.getItem("userLogin");
+  console.log(1111,userJson);
+  const user = JSON.parse(userJson);
+  const username = user ? user.data.username : null;
+
+  const handleLogout = () => {
+    localStorage.removeItem("userLogin");
+  };
+
   return (
     <div className="header-page">
       <header className="headerHome">
@@ -17,9 +26,19 @@ const HeaderUserComponent = () => {
           />
         </div>
         <div className="header-right">
-          <button><Link to={"/auth/login"}>LogIn</Link></button>
-          <BsFillPersonFill />
-          <p>Phúc nguyễn</p>
+        {user ? (
+            <>
+              <button onClick={handleLogout}><Link to={"/auth/login"}>Logout</Link></button>
+              <BsFillPersonFill />
+              <p>{username}</p>
+            </>
+          ) : (
+            <>
+              <button>
+                <Link to={"/auth/login"}>Login</Link>
+              </button>
+            </>
+          )}
           <BsBagHeartFill />
           <p>Cart:</p>
         </div>

@@ -24,15 +24,6 @@ function App() {
           </Route>
           <Route path="/Detail" element={<ProductDetail/>}/>
       </Routes>
-      
-      {/* <Header />
-      <Routes>
-        <Route path="/" element={<Card />} />
-        <Route path="/products" element={<Card products="2nut" />} />
-        <Route path="/carts" />
-        <Route path="/orders" />
-        <Route path="/add-products" />
-      </Routes> */}
     </div>
   );
 }
