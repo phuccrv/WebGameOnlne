@@ -30,6 +30,17 @@
     margin-left: 200px;
 }
 
+.search-container{
+    display: flex;
+    position: relative;
+}
+
+.search-container p{
+    position: absolute;
+    left: 93%;
+    top: 10%;
+}
+
 .header-life input::placeholder{
     color: white;
 }

@@ -1,12 +1,18 @@
 import React, { useEffect, useState } from "react";
 import "./ProductUserComponent.css";
 import { BsPlusCircle } from "react-icons/bs";
-const ProductUserComponent = () => {
+
+const ProductUserComponent = ({ searchKeyword }) => {
   const [games, setGames] = useState([]);
-  console.log(111, games.data);
+  const [filteredGames, setFilteredGames] = useState([]);
+
   useEffect(() => {
     fetchGames();
   }, []);
+
+  useEffect(() => {
+    filterGames();
+  }, [searchKeyword]);
 
   const fetchGames = async () => {
     try {
@@ -15,6 +21,17 @@ const ProductUserComponent = () => {
       setGames(data.data);
     } catch (error) {
       console.error(error);
+    }
+  };
+
+  const filterGames = () => {
+    if (!searchKeyword) {
+      setFilteredGames(games);
+    } else {
+      const filtered = games.filter((game) =>
+        game.title.toLowerCase().trim().includes(searchKeyword.toLowerCase())
+      );
+      setFilteredGames(filtered);
     }
   };
 
@@ -27,7 +44,7 @@ const ProductUserComponent = () => {
 
       {/* box-item phần danh sách sản phẩm */}
       <div className="list-product">
-        {games?.map((game) => (
+        {filteredGames.map((game) => (
           <div className="box-item">
             <img src={game.url} alt="" />
             <div className="box-dow">

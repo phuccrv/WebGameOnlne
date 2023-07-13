@@ -1,16 +1,22 @@
-import React from "react";
+import React, { useState } from "react";
 import "./HeaderUserComponent.css";
-import { BsBagHeartFill, BsFillPersonFill } from "react-icons/bs";
+import { BsSearchHeart, BsBagHeartFill, BsFillPersonFill } from "react-icons/bs";
 import { Link } from "react-router-dom";
-const HeaderUserComponent = () => {
-  const userJson = localStorage.getItem("userLogin");
-  console.log(1111,userJson);
-  const user = JSON.parse(userJson);
-  const username = user ? user.data.username : null;
+
+const HeaderUserComponent = ({ onSearch }) => {
+  const [searchKeyword, setSearchKeyword] = useState("");
+
+  const handleSearch = () => {
+    onSearch(searchKeyword);
+  };
 
   const handleLogout = () => {
     localStorage.removeItem("userLogin");
   };
+
+  const userJson = localStorage.getItem("userLogin");
+  const user = JSON.parse(userJson);
+  const username = user ? user.data.username : null;
 
   return (
     <div className="header-page">
@@ -18,17 +24,26 @@ const HeaderUserComponent = () => {
         <div className="header-life">
           <img src="/logogame.png" alt="" />
           <p>Game Store</p>
-          <input
-            type="text"
-            name="game"
-            id="game"
-            placeholder="Enter game..."
-          />
+          <div className="search-container">
+            <input
+              type="text"
+              name="game"
+              id="game"
+              placeholder="Enter game..."
+              value={searchKeyword}
+              onChange={(e) => setSearchKeyword(e.target.value)}
+            />
+            <p onClick={handleSearch}>
+              <BsSearchHeart />
+            </p>
+          </div>
         </div>
         <div className="header-right">
-        {user ? (
+          {user ? (
             <>
-              <button onClick={handleLogout}><Link to={"/auth/login"}>Logout</Link></button>
+              <button onClick={handleLogout}>
+                <Link to={"/auth/login"}>Logout</Link>
+              </button>
               <BsFillPersonFill />
               <p>{username}</p>
             </>
