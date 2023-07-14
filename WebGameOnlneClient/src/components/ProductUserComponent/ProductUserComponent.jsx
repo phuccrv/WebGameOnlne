@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import "./ProductUserComponent.css";
 import { BsPlusCircle } from "react-icons/bs";
+import { Link } from "react-router-dom";
+import axios from "axios";
 
 const ProductUserComponent = ({ searchKeyword }) => {
   const [games, setGames] = useState([]);
@@ -10,30 +12,29 @@ const ProductUserComponent = ({ searchKeyword }) => {
     fetchGames();
   }, []);
 
-  useEffect(() => {
-    filterGames();
-  }, [searchKeyword]);
+  // useEffect(() => {
+  //   filterGames();
+  // }, [searchKeyword]);
 
   const fetchGames = async () => {
     try {
-      const response = await fetch("http://localhost:4001/api/v1/product/");
-      const data = await response.json();
-      setGames(data.data);
+      const response = await axios("http://localhost:3000/api/v1/product/");
+      setFilteredGames(response.data.data);
     } catch (error) {
       console.error(error);
     }
   };
 
-  const filterGames = () => {
-    if (searchKeyword.trim() === "") {
-      setFilteredGames(games);
-    } else {
-      const filtered = games.filter((game) =>
-        game.title.toLowerCase().includes(searchKeyword.toLowerCase().trim())
-      );
-      setFilteredGames(filtered);
-    }
-  };
+  // const filterGames = () => {
+  //   if (searchKeyword.trim() === "") {
+  //     setFilteredGames(games);
+  //   } else {
+  //     const filtered = games.filter((game) =>
+  //       game?.title.toLowerCase().includes(searchKeyword.toLowerCase().trim())
+  //     );
+  //     setFilteredGames(filtered);
+  //   }
+  // };
 
   return (
     <div>
@@ -46,18 +47,20 @@ const ProductUserComponent = ({ searchKeyword }) => {
       <div className="list-product">
         {filteredGames.map((game) => (
           <div className="box-item" key={game.id}>
-            <img src={game.url} alt="" />
-            <div className="box-dow">
-              <div className="box-title">
-                <p>
-                  Add to cart <BsPlusCircle />
-                </p>
-                <p>${game.price}</p>
+            <Link to={`/product/${game.id}`}>
+              <img src={game.url} alt="" />
+              <div className="box-dow">
+                <div className="box-title">
+                  <p>
+                    Add to cart <BsPlusCircle />
+                  </p>
+                  <p>${game.price}</p>
+                </div>
+                <div className="title-dow">
+                  <p>{game?.title}</p>
+                </div>
               </div>
-              <div className="title-dow">
-                <p>{game.title}</p>
-              </div>
-            </div>
+            </Link>
           </div>
         ))}
       </div>

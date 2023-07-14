@@ -16,10 +16,12 @@ const LoginUserComponent = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const data = await dispatch(login({ username:account, password })).unwrap();
+    const data = await dispatch(
+      login({ username: account, password })
+    ).unwrap();
     console.log(data);
-    if(data.accessToken) {
-      navigate("/")
+    if (data.accessToken) {
+      navigate("/");
     }
     // kiểm tra chưa nhập thông tin mk vs tk
     const errors = {};
@@ -30,7 +32,6 @@ const LoginUserComponent = () => {
       errors.password = "Vui lòng nhập mật khẩu!";
     }
     setErrors(errors);
-
   };
   return (
     <div className="login-all">
@@ -62,7 +63,7 @@ const LoginUserComponent = () => {
           </p>
           <button type="submit">Login now</button>
           <p className="title-have-account">
-            <Link to={"/auth/register"}>if you have account</Link>
+            <Link to={"/auth/register"}>if you don't have account</Link>
           </p>
         </form>
       </div>

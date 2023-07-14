@@ -62,6 +62,7 @@ class UserController {
 
         try {
           const isPasswordMatch = await bcrypt.compare(password, user.password);
+          console.log("true hay false", isPasswordMatch)
 
           if (isPasswordMatch) {
             const accessToken = jwt.sign(user, sceretKey);

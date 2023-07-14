@@ -1,5 +1,5 @@
 const app = require('./app/app');
-const PORT = 4001;
+const PORT = 3000;
 app.listen(PORT, async () => {
   try {
     console.log(`Server Express running at http://localhost:${PORT}`);
