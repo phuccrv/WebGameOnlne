@@ -153,10 +153,10 @@ class productController {
   
         const totalPrice = cartItems.reduce((total, item) => total + parseFloat(item.price), 0);
   
-        const insertPaymentQuery = 'INSERT INTO payment (order_id, status, email, phone, fullname, total) VALUES (?, ?, ?, ?, ?, ?)';
+        const insertPaymentQuery = 'INSERT INTO payment (order_id, status) VALUES (?, ?)';
         mysql.query(
           insertPaymentQuery,
-          [order_id, status, email, phone, fullname, totalPrice],
+          [order_id, status, totalPrice],
           (err, paymentResult) => {
             if (err) {
               console.error(err);

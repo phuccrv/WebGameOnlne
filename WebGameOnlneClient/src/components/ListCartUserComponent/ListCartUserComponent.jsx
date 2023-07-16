@@ -1,13 +1,17 @@
 import React, { useEffect, useState } from "react";
 import "./ListCartUserComponent.css";
 import {
-  BsFillCaretLeftFill,
-  BsFillCaretRightFill,
+  // BsFillCaretLeftFill,
+  // BsFillCaretRightFill,
   BsArrowLeftCircleFill,
   BsFillTrashFill,
 } from "react-icons/bs";
 import { Link } from "react-router-dom";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import axios from "axios";
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css';
 
 const ListCartUserComponent = () => {
   const [cartItems, setCartItems] = useState([]);
@@ -17,12 +21,10 @@ const ListCartUserComponent = () => {
   const [email, setEmail] = useState("");
 
 
-  // console.log(11111, cartItems); // log thử xem có danh sách game trong cart hay ko
-
   useEffect(() => {
     fetchCartItems();
   }, [isCartUpdated]);
-  // lấy api để lấy danh sách game có trong cart
+
   const fetchCartItems = async () => {
     try {
       const user = JSON.parse(localStorage.getItem("userLogin"));
@@ -39,17 +41,43 @@ const ListCartUserComponent = () => {
       console.error(error);
     }
   };
-  // lấy api để xoá sẳn phẩm có trong cart
-  const deleteCartItem = async (cartItemId) => {
+
+  const deleteCartItem = (cartItemId) => {
+    confirmAlert({
+      title: 'Confirm delete',
+      message: 'Are you sure you want to delete this product?',
+      buttons: [
+        {
+          label: 'Yes',
+          onClick: () => handleDeleteCartItem(cartItemId),
+        },
+        {
+          label: 'Cancel',
+          onClick: () => {},
+        }
+      ]
+    });
+  };
+
+  const handleDeleteCartItem = async (cartItemId) => {
     try {
       await axios.delete(`http://localhost:3000/api/v1/cart/${cartItemId}`);
       setIsCartUpdated(!isCartUpdated);
+      toast.success('Xoá sản phẩm thành công', {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
     } catch (error) {
       console.error(error);
     }
   };
 
-  // tính tổng giá tiền
   const calculateTotalPrice = () => {
     let totalPrice = 0;
     cartItems.forEach((item) => {
@@ -62,40 +90,80 @@ const ListCartUserComponent = () => {
   };
 
 
-  // Xử lý khi người dùng thay đổi giá trị ô input
+  // lấy values từ ô input
   const handleFullnameChange = (event) => {
     setFullname(event.target.value);
-    console.log(1111,event.target.value);
   };
 
   const handlePhoneChange = (event) => {
     setPhone(event.target.value);
-    console.log(2222,event.target.value);
   };
 
   const handleEmailChange = (event) => {
     setEmail(event.target.value);
-    console.log(3333,event.target.value);
   };
 
-  // Xử lý khi người dùng nhấn nút "Buy Now"
-  const handleSubmit = (event) => {
+// xử lý đưa thông tin vào bảng payment_detail
+  const handleSubmit = async (event) => {
     event.preventDefault();
-
-    // Lấy giá trị từ các ô input
-    const formData = {
-      fullname,
-      phone,
-      email,
-    };
-
+  
+    try {
+      const user = JSON.parse(localStorage.getItem("userLogin"));
+      const userId = user.data.idUser;
+  
+      // Lấy danh sách game trong cart
+      const gameItems = cartItems.map((item) => {
+        return {
+          game_id: item.game_id,
+          title: item.title,
+          price: item.price,
+          url: item.url,
+        };
+      });
+  
+      const response = await axios.post(
+        `http://localhost:3000/api/v1/payment/${userId}`,
+        {
+          order_id: userId,
+          status: "paid",
+          email,
+          phone,
+          fullname,
+          gameItems, 
+        }
+      );
+  
+      if (response.status === 200) {
+        toast.success("Thêm thông tin vào bảng payment thành công", {
+          position: "top-right",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+        // Xoá các sản phẩm trong cart sau khi thêm vào bảng payment_detail thành công
+        setIsCartUpdated(!isCartUpdated);
+        setFullname("");
+        setPhone("");
+        setEmail("");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Có lỗi xảy ra. Vui lòng thử lại", {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
   };
-
-
-
-
-
-
 
   return (
     <div className="ListCartUserComponent">
@@ -156,6 +224,7 @@ const ListCartUserComponent = () => {
           <button type="submit">Buy Now</button>
         </form>
       </div>
+      <ToastContainer />
     </div>
   );
 };
