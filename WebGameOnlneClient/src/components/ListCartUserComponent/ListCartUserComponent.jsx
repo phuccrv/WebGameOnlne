@@ -6,12 +6,12 @@ import {
   BsArrowLeftCircleFill,
   BsFillTrashFill,
 } from "react-icons/bs";
-import { Link } from "react-router-dom";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { Link, useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
-import { confirmAlert } from 'react-confirm-alert';
-import 'react-confirm-alert/src/react-confirm-alert.css';
+import { confirmAlert } from "react-confirm-alert";
+import "react-confirm-alert/src/react-confirm-alert.css";
 
 const ListCartUserComponent = () => {
   const [cartItems, setCartItems] = useState([]);
@@ -19,7 +19,7 @@ const ListCartUserComponent = () => {
   const [fullname, setFullname] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
-
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchCartItems();
@@ -44,18 +44,18 @@ const ListCartUserComponent = () => {
 
   const deleteCartItem = (cartItemId) => {
     confirmAlert({
-      title: 'Confirm delete',
-      message: 'Are you sure you want to delete this product?',
+      title: "Confirm delete",
+      message: "Are you sure you want to delete this product?",
       buttons: [
         {
-          label: 'Yes',
+          label: "Yes",
           onClick: () => handleDeleteCartItem(cartItemId),
         },
         {
-          label: 'Cancel',
+          label: "Cancel",
           onClick: () => {},
-        }
-      ]
+        },
+      ],
     });
   };
 
@@ -63,7 +63,7 @@ const ListCartUserComponent = () => {
     try {
       await axios.delete(`http://localhost:3000/api/v1/cart/${cartItemId}`);
       setIsCartUpdated(!isCartUpdated);
-      toast.success('Xoá sản phẩm thành công', {
+      toast.success("Xoá sản phẩm thành công", {
         position: "top-right",
         autoClose: 2000,
         hideProgressBar: false,
@@ -89,7 +89,6 @@ const ListCartUserComponent = () => {
     return totalPrice.toFixed(2);
   };
 
-
   // lấy values từ ô input
   const handleFullnameChange = (event) => {
     setFullname(event.target.value);
@@ -103,14 +102,14 @@ const ListCartUserComponent = () => {
     setEmail(event.target.value);
   };
 
-// xử lý đưa thông tin vào bảng payment_detail
+  // xử lý đưa thông tin vào bảng payment_detail
   const handleSubmit = async (event) => {
     event.preventDefault();
-  
+
     try {
       const user = JSON.parse(localStorage.getItem("userLogin"));
       const userId = user.data.idUser;
-  
+
       // Lấy danh sách game trong cart
       const gameItems = cartItems.map((item) => {
         return {
@@ -120,7 +119,7 @@ const ListCartUserComponent = () => {
           url: item.url,
         };
       });
-  
+
       const response = await axios.post(
         `http://localhost:3000/api/v1/payment/${userId}`,
         {
@@ -129,10 +128,10 @@ const ListCartUserComponent = () => {
           email,
           phone,
           fullname,
-          gameItems, 
+          gameItems,
         }
       );
-  
+
       if (response.status === 200) {
         toast.success("Thêm thông tin vào bảng payment thành công", {
           position: "top-right",
@@ -145,10 +144,14 @@ const ListCartUserComponent = () => {
           theme: "light",
         });
         // Xoá các sản phẩm trong cart sau khi thêm vào bảng payment_detail thành công
-        setIsCartUpdated(!isCartUpdated);
-        setFullname("");
-        setPhone("");
-        setEmail("");
+        setTimeout(() => {
+          setIsCartUpdated(!isCartUpdated);
+          setCartItems([]);
+          setFullname("");
+          setPhone("");
+          setEmail("");
+          navigate("/");
+        }, 2000);
       }
     } catch (error) {
       console.error(error);
