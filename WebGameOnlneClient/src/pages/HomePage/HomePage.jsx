@@ -7,17 +7,24 @@ import FooterUserComponent from "../../components/FooterUserComponent/FooterUser
 
 const HomePage = () => {
   const [searchKeyword, setSearchKeyword] = useState("");
-
+  const [isUpdate, setIsUpdate] = useState(true);
   const handleSearch = (keyword) => {
     setSearchKeyword(keyword);
   };
 
+  const handleUpdateCount = () => {
+    setIsUpdate(!isUpdate);
+  };
+
   return (
     <div style={{ backgroundColor: "#1e272e" }}>
-      <HeaderUserComponent onSearch={handleSearch} />
+      <HeaderUserComponent isUpdate={isUpdate} onSearch={handleSearch} />
       <div className="layout-product">
         <NavBarUserComponent />
-        <ProductUserComponent searchKeyword={searchKeyword} />
+        <ProductUserComponent
+          searchKeyword={searchKeyword}
+          handleUpdateCount={handleUpdateCount}
+        />
       </div>
       <FooterUserComponent />
     </div>

@@ -8,7 +8,7 @@ import {
   BsFillCassetteFill,
   BsFillFlagFill,
   BsFillLightningFill,
-  BsBalloonHeartFill,
+  
   BsBoxFill
 } from "react-icons/bs";
 import { Link } from "react-router-dom";
@@ -17,13 +17,10 @@ const NavBarUserComponent = () => {
     <div className="navbar-all">
       <div className="nav-bar">
         <h1>Filters</h1>
-        <Link className="Filters">
-          <BsFillGiftFill />
-          <p>Wishlist</p>
-        </Link>
+        
         <Link className="Filters">
           <BsHeartFill />
-          <p>Ratings</p>
+          <p>All Game</p>
         </Link>
         {/* Genres */}
         <h1>Genres</h1>

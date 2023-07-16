@@ -1,5 +1,6 @@
 .content-title {
     color: white;
+    margin-top: 60px;
 }
 
 .content-title h1 {
@@ -27,6 +28,12 @@
     overflow-y: hidden;
 }
 
+.box-item a{
+    text-decoration: none;
+    color: white;
+    height: 160px;
+}
+
 .list-product {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -35,7 +42,7 @@
 }
 
 .box-item img {
-    height: 160px;
+    height: 100%;
     object-fit: cover;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
@@ -49,6 +56,7 @@
 
 .box-title p {
     padding: 10px 0px 0px 0px;
+    cursor: pointer;
 }
 
 .box-title p:first-child {
@@ -68,7 +76,6 @@
     text-align: left;
     padding: 0px 10px 10px 10px;
 }
-
 
 @media (max-width: 1200px) {
     .list-product {

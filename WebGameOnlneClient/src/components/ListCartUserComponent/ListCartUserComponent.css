@@ -12,11 +12,12 @@ thead th {
 
 tbody tr {
     border-bottom: 1px solid;
+    width: 50px;
 }
 
 tbody td img {
-    height: 100px;
-    width: 150px;
+    height: 70px;
+    width: 70px;
     padding: 5px;
 }
 
@@ -56,3 +57,22 @@ form input{
     height: 40px;
     font-size: 18px;
 }
+
+.Listcart{
+    color: white;
+}
+
+.delete{
+    color: #f39c12;
+    cursor: pointer;
+}
+
+.ListCartUserComponent h1{
+    padding-top: 50px;
+}
+
+.total{
+    margin-top: 10px;
+    font-size: 20px;text-transform: uppercase;
+}
+
