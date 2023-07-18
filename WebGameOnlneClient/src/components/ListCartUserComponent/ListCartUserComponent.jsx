@@ -124,9 +124,8 @@ const ListCartUserComponent = () => {
         };
       });
 
-      const response = await axios.post(
-        `http://localhost:3000/api/v1/payment/${userId}`,
-        {
+      const response = await axios.post(`http://localhost:3000/api/v1/payment/${userId}`,
+      {
           order_id: userId,
           status: "paid",
           email,
@@ -135,7 +134,6 @@ const ListCartUserComponent = () => {
           gameItems,
         }
       );
-
       if (response.status === 200) {
         toast.success("Account information will be sent via email", {
           position: "top-right",
