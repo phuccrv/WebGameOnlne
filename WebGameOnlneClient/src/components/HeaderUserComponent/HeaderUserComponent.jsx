@@ -18,6 +18,9 @@ const HeaderUserComponent = ({ onSearch,isUpdate }) => {
 
   const handleLogout = () => {
     localStorage.removeItem("userLogin");
+    localStorage.removeItem("accessTokenRegister");
+    localStorage.removeItem("token");
+
   };
 
   const userJson = localStorage.getItem("userLogin");
@@ -34,7 +37,7 @@ const HeaderUserComponent = ({ onSearch,isUpdate }) => {
 
   const fetchCartItemCount = async () => {
     try {
-      const user = JSON.parse(localStorage.getItem("userLogin"));
+      const user = JSON.parse(localStorage.getItem("userLogin")) || [];
       const userId = user.data.idUser;
       const response = await axios.get(
         `http://localhost:3000/api/v1/cart-user/${userId}`

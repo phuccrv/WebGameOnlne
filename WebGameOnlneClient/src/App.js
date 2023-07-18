@@ -1,26 +1,30 @@
 import "./App.css";
 import { Routes, Route } from "react-router-dom";
-import Header from "./components/Header";
-import Card from "./components/Card";
-import Loading from "./components/Loading";
 import Auth from "./pages/Auth/Auth";
 import LoginUserComponent from "./components/LoginUserComponent/LoginUserComponent";
 import RegisterUserComponent from "./components/RegisterUserComponent/RegisterUserComponent";
 import HomePage from "./pages/HomePage/HomePage";
 import CartPage from "./pages/CartPage/CartPage";
 import ProductDetail from "./pages/ProductDetail/ProductDetail";
+import PurchaseHistory from "./pages/PurchaseHistoryPage/PurchaseHistory";
+import RequiredAuth from "./components/RequireAuth";
 
 function App() {
   return (
     <div className="App">
       <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/cart" element={<CartPage />} />
+          <Route path="/" element={<HomePage />} />
+        <Route element={<RequiredAuth />}>
+          <Route path="/cart" element={<CartPage />} />
+          <Route path="/history" element={<PurchaseHistory />} />
+        </Route>
         <Route path="/auth" element={<Auth />}>
           <Route path="login" element={<LoginUserComponent />}></Route>
           <Route path="register" element={<RegisterUserComponent />}></Route>
         </Route>
-        <Route path="/product/:id" element={<ProductDetail />} />
+        <Route element={<RequiredAuth/>}>
+          <Route path="/product/:id" element={<ProductDetail />} />
+        </Route>
       </Routes>
     </div>
   );

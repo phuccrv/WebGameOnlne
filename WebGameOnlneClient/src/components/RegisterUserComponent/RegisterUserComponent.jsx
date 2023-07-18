@@ -3,14 +3,21 @@ import "./RegisterUserComponent.css";
 import { useDispatch } from "react-redux";
 import { register } from "../../store/registerSlice";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 const RegisterUserComponent = () => {
+
   const dispatch = useDispatch();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
+
+  useEffect(() => {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("userLogin");
+  }, []);
   const handleSubmit = (e) => {
     e.preventDefault();
     // Kiểm tra dữ liệu trước khi gửi

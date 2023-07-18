@@ -12,6 +12,7 @@ import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
+import Loading from "../Loading/Loading";
 
 const ListCartUserComponent = () => {
   const [cartItems, setCartItems] = useState([]);
@@ -19,6 +20,7 @@ const ListCartUserComponent = () => {
   const [fullname, setFullname] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
+  const [isLoad, setIsLoad] = useState(true); 
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -36,9 +38,11 @@ const ListCartUserComponent = () => {
       if (response.status === 200) {
         const items = response.data.data;
         setCartItems(items);
+        setIsLoad(false)
       }
     } catch (error) {
       console.error(error);
+      setIsLoad(false)
     }
   };
 
@@ -133,7 +137,7 @@ const ListCartUserComponent = () => {
       );
 
       if (response.status === 200) {
-        toast.success("Thêm thông tin vào bảng payment thành công", {
+        toast.success("Account information will be sent via email", {
           position: "top-right",
           autoClose: 2000,
           hideProgressBar: false,
@@ -155,7 +159,7 @@ const ListCartUserComponent = () => {
       }
     } catch (error) {
       console.error(error);
-      toast.error("Có lỗi xảy ra. Vui lòng thử lại", {
+      toast.error("An error occurred. Please try again", {
         position: "top-right",
         autoClose: 2000,
         hideProgressBar: false,
@@ -170,6 +174,7 @@ const ListCartUserComponent = () => {
 
   return (
     <div className="ListCartUserComponent">
+       {isLoad && <Loading/>}
       <h1 className="Listcart">List Game Cart</h1>
       <table>
         <tbody>

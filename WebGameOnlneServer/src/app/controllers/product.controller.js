@@ -139,60 +139,134 @@ class productController {
     try {
       const { order_id, status, email, phone, fullname } = req.body;
       const userCart = req.params.id;
-  
+
       const getCartItemsQuery = `SELECT * FROM cart WHERE username = ${userCart}`;
       mysql.query(getCartItemsQuery, (err, cartItems) => {
         if (err) {
           console.error(err);
           return res.status(500).json({ error: 'Lỗi server' });
         }
-  
+
         if (cartItems.length === 0) {
           return res.status(404).json({ message: 'Giỏ hàng không tồn tại' });
         }
-  
+
         const totalPrice = cartItems.reduce((total, item) => total + parseFloat(item.price), 0);
-  
+
         const insertPaymentQuery = 'INSERT INTO payment (order_id, status) VALUES (?, ?)';
-        mysql.query(
-          insertPaymentQuery,
-          [order_id, status, totalPrice],
-          (err, paymentResult) => {
-            if (err) {
-              console.error(err);
-              return res.status(500).json({ error: 'Lỗi server' });
-            }
-  
-            const paymentId = paymentResult.insertId;
-  
-            const insertPaymentDetailQuery = 'INSERT INTO payment_detail (payment_id, game_id, title, price, url) VALUES (?, ?, ?, ?, ?)';
-            cartItems.forEach((item) => {
-              const { game_id, title, price, url } = item;
-              mysql.query(insertPaymentDetailQuery, [paymentId, game_id, title, price, url], (err) => {
-                if (err) {
-                  console.error(err);
-                  return res.status(500).json({ error: 'Lỗi server' });
-                }
-              });
-            });
-  
-            const deleteCartItemsQuery = `DELETE FROM cart WHERE username = ${userCart}`;
-            mysql.query(deleteCartItemsQuery, (err) => {
+        mysql.query(insertPaymentQuery, [order_id, status, totalPrice], (err, paymentResult) => {
+          if (err) {
+            console.error(err);
+            return res.status(500).json({ error: 'Lỗi server' });
+          }
+
+          const paymentId = paymentResult.insertId;
+
+          const insertPaymentDetailQuery =
+            'INSERT INTO payment_detail (payment_id, game_id, title, price, url) VALUES (?, ?, ?, ?, ?)';
+          cartItems.forEach((item) => {
+            const { game_id, title, price, url } = item;
+            mysql.query(insertPaymentDetailQuery, [paymentId, game_id, title, price, url], (err) => {
               if (err) {
                 console.error(err);
                 return res.status(500).json({ error: 'Lỗi server' });
               }
-  
-              res.status(200).json({ message: 'Thêm thông tin vào bảng payment thành công' });
             });
-          }
-        );
+          });
+
+          const deleteCartItemsQuery = `DELETE FROM cart WHERE username = ${userCart}`;
+          mysql.query(deleteCartItemsQuery, (err) => {
+            if (err) {
+              console.error(err);
+              return res.status(500).json({ error: 'Lỗi server' });
+            }
+
+            res.status(200).json({ message: 'Thêm thông tin vào bảng payment thành công' });
+          });
+        });
       });
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: 'Lỗi server' });
     }
   }
+
+  getAllPaymentDetails(req, res) {
+    try {
+      const query = 'SELECT * FROM payment_detail';
+
+      mysql.query(query, (err, results) => {
+        if (err) {
+          console.error(err);
+          return res.status(500).json({ error: 'Lỗi server' });
+        }
+
+        res.status(200).json({ data: results });
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Lỗi server' });
+    }
+  }
+  // xoá sản phẩm trang admin
+  deleteGame(req, res) {
+    const { idGame } = req.params;
+  
+    const deleteQuery = `
+      DELETE game, cart, orderitem, image
+      FROM game
+      LEFT JOIN cart ON game.idGame = cart.game_id
+      LEFT JOIN orderitem ON game.idGame = orderitem.game_id
+      LEFT JOIN image ON game.idGame = image.game_id
+      WHERE game.idGame = ?
+    `;
+  
+    mysql.query(deleteQuery, [idGame], (err, result) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Lỗi server' });
+      }
+  
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ error: 'Sản phẩm không tồn tại' });
+      }
+  
+      res.status(200).json({ message: 'Xóa sản phẩm thành công' });
+    });
+  }
+// thêm mới game
+postGame(req, res) {
+  try {
+    const { title, description, price, releasedate, category } = req.body;
+
+    const insertGameQuery = 'INSERT INTO game (title, description, price, releasedate, category) VALUES (?, ?, ?, ?, ?)';
+
+    mysql.query(insertGameQuery, [title, description, price, releasedate, category], (err, gameResult) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Lỗi server' });
+      }
+
+      const gameId = gameResult.insertId;
+
+      const { imageUrl } = req.body;
+
+      const insertImageQuery = 'INSERT INTO image (game_id, url) VALUES (?, ?)';
+
+      mysql.query(insertImageQuery, [gameId, imageUrl], (err) => {
+        if (err) {
+          console.error(err);
+          return res.status(500).json({ error: 'Lỗi server' });
+        }
+
+        res.status(201).json({ message: 'Thêm sản phẩm thành công' });
+      });
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Lỗi server' });
+  }
+}
 }
 
 module.exports = new productController();

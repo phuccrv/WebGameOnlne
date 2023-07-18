@@ -5,23 +5,45 @@ import { useDispatch } from "react-redux";
 import { login } from "../../store/userSlice";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Loading from "../Loading/Loading";
+import { useEffect } from "react";
 
 const LoginUserComponent = () => {
   const [account, setAccount] = useState("");
   const [password, setPassword] = useState("");
   const [repassword, setRepassword] = useState("");
   const [errors, setErrors] = useState({});
+  
+  useEffect(() => {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("userLogin");
+  }, []);
+  
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     const data = await dispatch(
       login({ username: account, password })
     ).unwrap();
     console.log(data);
-    if (data.accessToken) {
+    if (data.data.isLocked === 0 && data.accessToken) {
       navigate("/");
+    } else {
+      toast.error(" account lock", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
+    if (data.accessToken) {
     }
     // kiểm tra chưa nhập thông tin mk vs tk
     const errors = {};
@@ -35,6 +57,7 @@ const LoginUserComponent = () => {
   };
   return (
     <div className="login-all">
+      {/* {isLoad && <Loading />} */}
       <div className="login-box">
         <h1>Login Here</h1>
         <p>Enter your account and password to login</p>

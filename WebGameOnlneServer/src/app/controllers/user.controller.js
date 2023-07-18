@@ -47,7 +47,7 @@ class UserController {
       });
     });
   }
-// login user
+  // login user
   async handleLogin(req, res) {
     const { username, password } = req.body;
 
@@ -62,7 +62,7 @@ class UserController {
 
         try {
           const isPasswordMatch = await bcrypt.compare(password, user.password);
-          console.log("true hay false", isPasswordMatch)
+          console.log('true hay false', isPasswordMatch);
 
           if (isPasswordMatch) {
             const accessToken = jwt.sign(user, sceretKey);
@@ -96,6 +96,28 @@ class UserController {
       res.status(500).json({ msg: 'Server error' });
     }
   }
+
+  // khoá user trang admin
+  blockLockUser(req, res) {
+    const { idUser } = req.params;
+    const isLocked = req.body;
+    console.log(idUser, req.body);
+    try {
+      const query = `UPDATE user SET isLocked = ${isLocked.isLocked} WHERE idUser = ${idUser}`;
+      sql.query(query, (err, results) => {
+        if (err) {
+          console.error(err);
+          return res.status(500).json({ error: 'Lỗi server' });
+        }
+        res.status(200).json({ message: 'Tài khoản đã được khoá' });
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Lỗi server' });
+    }
+  }
+
+ 
 }
 
 module.exports = new UserController();

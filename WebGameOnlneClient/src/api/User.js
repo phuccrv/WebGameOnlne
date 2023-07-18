@@ -12,8 +12,8 @@ export class UserAPI {
     return axiosClient.post(url, param);
   }
 
-//   static getUsers() {
-//     const url = "/users";
-//     return axiosClient.get(url);
-//   }
+  static lockAccount(id, status) {
+    const url = "/api/v1/user/lock-user";
+    return axiosClient.patch(url, id, status)
+  }
 }

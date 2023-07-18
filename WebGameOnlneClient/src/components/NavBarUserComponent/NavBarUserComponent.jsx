@@ -1,5 +1,5 @@
 import React from "react";
-import "./NavBarUserComponent.css"
+import "./NavBarUserComponent.css";
 import {
   BsFillGiftFill,
   BsHeartFill,
@@ -8,44 +8,71 @@ import {
   BsFillCassetteFill,
   BsFillFlagFill,
   BsFillLightningFill,
-  
-  BsBoxFill
+  BsBoxFill,
 } from "react-icons/bs";
 import { Link } from "react-router-dom";
-const NavBarUserComponent = () => {
+
+const NavBarUserComponent = ({ onGenreSelect }) => {
+  const handleGenreSelect = (genre) => {
+    onGenreSelect(genre);
+  };
+
   return (
     <div className="navbar-all">
       <div className="nav-bar">
         <h1>Filters</h1>
-        
-        <Link className="Filters">
+        <Link to="/history" className="Filters">
           <BsHeartFill />
-          <p>All Game</p>
+          <p>Purchase History</p>
         </Link>
         {/* Genres */}
         <h1>Genres</h1>
-        <Link className="Genres">
+        <Link
+          to="/"
+          className="Genres"
+          onClick={() => handleGenreSelect("Action")}
+        >
           <BsBoxFill />
           <p>Action</p>
         </Link>
-        <Link className="Genres">
-            <BsFillShieldFill/>
+        <Link
+          to="/"
+          className="Genres"
+          onClick={() => handleGenreSelect("Strategy")}
+        >
+          <BsFillShieldFill />
           <p>Strategy</p>
         </Link>
-        <Link className="Genres">
-            <BsFillBinocularsFill/>
+        <Link
+          to="/"
+          className="Genres"
+          onClick={() => handleGenreSelect("RPG")}
+        >
+          <BsFillBinocularsFill />
           <p>RPG</p>
         </Link>
-        <Link className="Genres">
-            <BsFillCassetteFill/>
+        <Link
+          to="/"
+          className="Genres"
+          onClick={() => handleGenreSelect("Shooter")}
+        >
+          <BsFillCassetteFill />
           <p>Shooter</p>
         </Link>
-        <Link className="Genres">
-            <BsFillFlagFill/>
+        <Link
+          to="/"
+          className="Genres"
+          onClick={() => handleGenreSelect("Puzzle")}
+        >
+          <BsFillFlagFill />
           <p>Puzzle</p>
         </Link>
-        <Link className="Genres">
-            <BsFillLightningFill/>
+        <Link
+          to="/"
+          className="Genres"
+          onClick={() => handleGenreSelect("Racing")}
+        >
+          <BsFillLightningFill />
           <p>Racing</p>
         </Link>
       </div>
